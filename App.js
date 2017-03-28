@@ -10,6 +10,8 @@ const todos = (state = [], action) => {
         ...state,
         todo(undefined, action)
       ];
+    case 'TOGGLE_TODO':
+      return state.map((t) => todo(t, action));
     default:
       return state;
   }
@@ -21,7 +23,14 @@ const todo = (state, action) => {
       return {
         id: action.id,
         text: action.text,
+        isCompleted: false
       };
+    case 'TOGGLE_TODO':
+      if(state.id !== action.id) {
+        return state;
+      }
+
+      return Object.assign({}, state, { isCompleted: !state.isCompleted })
     default:
       return state;
   }
@@ -51,7 +60,9 @@ class App extends Component {
 
         <ul>
           { todos.map((todo) =>
-              <li key={todo.id}>
+              <li key={todo.id}
+                style={{ textDecoration: todo.isCompleted ? 'line-through' : 'none' }}
+                onClick={ () => store.dispatch({ type: 'TOGGLE_TODO', id: todo.id }) }>
                 {todo.text}
               </li>
             )
