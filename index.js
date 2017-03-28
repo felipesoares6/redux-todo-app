@@ -1,5 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App.js';
+import App, { store } from './App.js';
 
-ReactDOM.render(<App name="felipe" />, document.getElementById('root'));
+const render = () => {
+  ReactDOM.render(<App todos={store.getState()} />, document.getElementById('root'));
+}
+
+store.subscribe(render);
+render();
