@@ -23,14 +23,14 @@ const todo = (state, action) => {
       return {
         id: action.id,
         text: action.text,
-        isCompleted: false
+        completed: false
       };
     case 'TOGGLE_TODO':
       if(state.id !== action.id) {
         return state;
       }
 
-      return Object.assign({}, state, { isCompleted: !state.isCompleted })
+      return Object.assign({}, state, { completed: !state.completed })
     default:
       return state;
   }
@@ -70,11 +70,32 @@ const getVisibleTodos = (todos, filter) => {
     case 'SHOW_ALL':
       return todos;
     case 'SHOW_COMPLETED':
-      return todos.filter((todo) => todo.isCompleted);
+      return todos.filter((todo) => todo.completed);
     case 'SHOW_ACTIVE':
-      return todos.filter((todo) => !todo.isCompleted);
-    default:
+      return todos.filter((todo) => !todo.completed);
   }
+}
+
+const Todo = ({ onClick, completed, text }) => {
+  return (
+    <li onClick={onClick}
+      style={{ textDecoration: completed ? 'line-through' : 'none' }}>
+      {text} {completed}
+    </li>
+  )
+}
+
+const TodoList = ({ todos, onTodoClick }) => {
+  return (
+    <ul>
+      {todos.map((todo) =>
+        <Todo
+          key={todo.id}
+          {...todo}
+          onClick={() => onTodoClick(todo.id)}/>
+      )}
+    </ul>
+  )
 }
 
 let todoID = 0;
@@ -97,17 +118,12 @@ class App extends Component {
           Add todo
         </button>
 
-        <ul>
-          { visibleTodos.map((todo) =>
-              <li key={todo.id}
-                style={{ textDecoration: todo.isCompleted ? 'line-through' : 'none' }}
-                onClick={ () => store.dispatch({ type: 'TOGGLE_TODO', id: todo.id }) }>
-                {todo.text}
-              </li>
-            )
-          }
-        </ul>
-
+        <TodoList
+          todos={visibleTodos}
+          onTodoClick={(id) => store.dispatch({
+            type: 'TOGGLE_TODO',
+            id
+          })}/>
         <p> Show: {' '}
           <FilterLink filter="SHOW_ALL" currentFilter={visibilityFilter}>
             All
