@@ -3,6 +3,7 @@ import { Component } from 'React';
 import PropTypes from 'prop-types';
 
 import VisibleTodoList from './containers/VisibleTodoList';
+import AddTodo from './containers/AddTodo';
 
 const todo = (state, action) => {
   switch (action.type) {
@@ -127,35 +128,6 @@ const TodoList = ({ todos, onTodoClick }) => {
       )}
     </ul>
   )
-}
-
-let todoID = 0;
-
-const AddTodo = (props, { store }) => {
-  let input;
-
-  return (
-    <div>
-      <input ref={node => {
-        input = node;
-      }} />
-
-      <button onClick={() => {
-        store.dispatch({
-          type: 'ADD_TODO',
-          id: todoID++,
-          text: input.value
-        })
-        input.value = '';
-      }}>
-    Add Todo
-  </button>
-</div>
-  )
-}
-
-AddTodo.contextTypes = {
-  store: PropTypes.object
 }
 
 const App = () => {
