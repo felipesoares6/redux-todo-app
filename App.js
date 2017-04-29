@@ -1,7 +1,8 @@
 import React from 'react';
 import { Component } from 'React';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+
+import VisibleTodoList from './containers/VisibleTodoList';
 
 const todo = (state, action) => {
   switch (action.type) {
@@ -115,26 +116,6 @@ const Footer = () => {
   )
 }
 
-const getVisibleTodos = (todos, filter) => {
-  switch (filter) {
-    case 'SHOW_ALL':
-      return todos;
-    case 'SHOW_COMPLETED':
-      return todos.filter((todo) => todo.completed);
-    case 'SHOW_ACTIVE':
-      return todos.filter((todo) => !todo.completed);
-  }
-}
-
-const Todo = ({ onClick, completed, text }) => {
-  return (
-    <li onClick={onClick}
-      style={{ textDecoration: completed ? 'line-through' : 'none' }}>
-      {text}
-    </li>
-  )
-}
-
 const TodoList = ({ todos, onTodoClick }) => {
   return (
     <ul>
@@ -147,31 +128,6 @@ const TodoList = ({ todos, onTodoClick }) => {
     </ul>
   )
 }
-
-const mapStateToProps = (state) => {
-  return {
-    todos: getVisibleTodos(
-      state.todos,
-      state.visibilityFilter
-    )
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onTodoClick: (id) => {
-      dispatch({
-        type: 'TOGGLE_TODO',
-        id
-      })
-    }
-  }
-}
-
-const VisibleTodoList = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TodoList);
 
 let todoID = 0;
 
