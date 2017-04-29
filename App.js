@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import VisibleTodoList from './containers/VisibleTodoList';
 import AddTodo from './containers/AddTodo';
+import Footer from './components/Footer';
 
 const todo = (state, action) => {
   switch (action.type) {
@@ -45,76 +46,6 @@ export const visibilityFilter = (state = 'SHOW_ALL', action) => {
     default:
       return state;
   }
-}
-
-const Link = ({ active, children, onClick }) => {
-  if (active) {
-    return <span> {children} </span>;
-  }
-
-  return (
-    <a href="#"
-      onClick={(e) => {
-        e.preventDefault();
-        onClick();
-    }}>
-      {children}
-    </a>
-  )
-}
-
-class FilterLink extends Component {
-  componentDidMount () {
-    const { store } = this.context;
-    this.unsubscribe = store.subscribe(() => this.forceUpdate());
-  }
-
-  componentWillUnmount () {
-    this.unsubscribe();
-  }
-
-  render () {
-    const props = this.props;
-    const { store } = this.context;
-    const state = store.getState();
-
-    return (
-      <Link
-        active={ props.filter === store.visibilityFilter }
-        onClick={() => {
-          store.dispatch({
-            type: 'SET_VISIBILITY_FILTER',
-            filter: props.filter
-          })
-        }}
-      >
-        {this.props.children}
-      </Link>
-
-    )
-  }
-}
-
-FilterLink.contextTypes = {
-  store: PropTypes.object
-}
-
-const Footer = () => {
-  return (
-    <p> Show: {' '}
-      <FilterLink filter="SHOW_ALL">
-        All
-      </FilterLink>
-      {', '}
-      <FilterLink filter="SHOW_ACTIVE">
-        Active
-      </FilterLink>
-      {', '}
-      <FilterLink filter="SHOW_COMPLETED">
-        Completed
-      </FilterLink>
-    </p>
-  )
 }
 
 const TodoList = ({ todos, onTodoClick }) => {
